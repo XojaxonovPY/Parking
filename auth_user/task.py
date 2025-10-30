@@ -16,10 +16,10 @@ def send_email(subject, message, from_email, recipient_list):
     return 'Send email successfully'
 
 
-@shared_task
-def delete_not_verify_users(is_verify=False):
-    User.objects.filter(is_verify=is_verify).delete()
-    return 'User success deleted'
+# @shared_task
+# def delete_not_verify_users(is_verify=False):
+#     User.objects.filter(is_verify=is_verify).delete()
+#     return 'User success deleted'
 
 
-delete_not_verify_users.delay()
+# delete_not_verify_users.delay()

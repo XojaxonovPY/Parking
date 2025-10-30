@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import EmailField, IntegerField, CharField
 from rest_framework.serializers import ModelSerializer, Serializer
 from auth_user.models import User
+import json
 
 
 class RegisterModelSerializer(ModelSerializer):
@@ -18,28 +19,16 @@ class RegisterModelSerializer(ModelSerializer):
     def validate_password(self, value):
         return make_password(value)
 
-    def create(self, validated_data):
-        return User.objects.create(**validated_data)
-
 
 class EmailCheckSerializer(Serializer):
-    email = EmailField(max_length=255)
-    code = IntegerField()
+    code = CharField(required=True)
 
-    def validate(self, data):
-        email = data.get('email')
-        code = str(data.get('code'))
-
+    def validate_code(self, data):
         redis = Redis(decode_responses=True)
-        user = User.objects.filter(email=email).first()
-        stored_code = redis.get(user.email)
-        if stored_code is None:
-            raise ValidationError("Verification code has expired or is invalid")
-
-        if stored_code != code:
-            raise ValidationError("Invalid verification code")
-        user.is_verify = True
-        user.save()
+        user_data = redis.get(data)
+        if not user_data:
+            raise ValidationError('invalid code')
+        self.user = json.loads(user_data)
         return data
 
 
@@ -49,7 +38,6 @@ class ForgotPasswordSerializer(Serializer):
     password = CharField(max_length=50)
 
     def validate(self, data):
-
         confirm = data.get('confirm_password')
         password = data.get('password')
         email = data.get('email')
