@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from RestAPI.settings import EMAIL_HOST_USER
+from root.settings import EMAIL_HOST_USER
 from auth_user.models import User
 from auth_user.serialize import RegisterModelSerializer, EmailCheckSerializer, ForgotPasswordSerializer
 from auth_user.task import send_email

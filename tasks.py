@@ -19,14 +19,14 @@ def apps(c):
 
 @task
 def celery(c):
-    c.run("celery -A RestAPI worker --pool=solo -l info")
+    c.run("celery -A root worker --pool=solo -l info")
 
 
 @task
 def flower(c):
-    c.run("celery -A RestAPI flower")
+    c.run("celery -A root flower")
 
 
 @task
 def beat(c):
-    c.run("celery -A RestAPI beat -l info -S django")
+    c.run("celery -A root beat -l info -S django")
